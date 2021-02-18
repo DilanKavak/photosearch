@@ -67,6 +67,9 @@ class Photo {
   int ispublic;
   int isfriend;
   int isfamily;
+  String url_w;
+  int height_w;
+  int width_w;
 
   Photo(
       {this.id,
@@ -77,7 +80,12 @@ class Photo {
         this.title,
         this.ispublic,
         this.isfriend,
-        this.isfamily});
+        this.isfamily,
+        this.url_w,
+        this.height_w,
+        this.width_w,
+
+      });
 
   Photo.fromJson(Map<String, dynamic> json) {
     id = json['id'];
@@ -89,6 +97,9 @@ class Photo {
     ispublic = json['ispublic'];
     isfriend = json['isfriend'];
     isfamily = json['isfamily'];
+    url_w=json['url_w'];
+    height_w=json['height_w'];
+    width_w=json['width_w'];
   }
 
   Map<String, dynamic> toJson() {
@@ -102,6 +113,10 @@ class Photo {
     data['ispublic'] = this.ispublic;
     data['isfriend'] = this.isfriend;
     data['isfamily'] = this.isfamily;
+    data['url_w'] = this.url_w;
+    data['height_w'] = this.height_w;
+    data['width_w'] = this.width_w;
+
     return data;
   }
 }

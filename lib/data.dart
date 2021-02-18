@@ -4,7 +4,7 @@ import 'package:flutter_app/networking.dart';
 import 'package:flutter_app/flickrmodel.dart';
 import 'package:flutter/material.dart';
 const apiKey="f61b24e760268af902f28abef3dd0648";
-const FlickrSearchUrl=' https://www.flickr.com/services/rest/?method=flickr.photos.search';
+const FlickrSearchUrl=' https://api.flickr.com/services/rest/?method=flickr.photos.search';
 
 
 

@@ -6,22 +6,24 @@ import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter_app/flickrmodel.dart';
 const apiKey="f61b24e760268af902f28abef3dd0648";
-const FlickrSearchUrl=' https://www.flickr.com/services/rest/?method=flickr.photos.search';
-
+const FlickrSearchUrl='https://www.flickr.com/services/rest/?method=flickr.photos.search';
 
 
 
 Future<List<Photo>> _getPhoto() async {
+
   var category;
-  final response = await http.get(
-      "$FlickrSearchUrl&api_key=$apiKey&text=$category&per_page=500&format=json&nojsoncallback=1");
+  final response = await http.get("$FlickrSearchUrl&api_key=$apiKey&format=json&nojsoncallback=1&text=flower&extras=url_w");
+
   return compute(parsePhotos, response.body);
 }
 
 List<Photo> parsePhotos(String responseBody) {
-  final parsed = jsonDecode(responseBody).cast<Map<String, dynamic>>();
+  final parsed = jsonDecode(responseBody);
 
-  return parsed.map<Photo>((json) => Photo.fromJson(json)).toList();
+
+  final converted = parsed['photos']['photo'].map<Photo>((json) => Photo.fromJson(json)).toList();
+  return converted;
 }
 
 
@@ -36,8 +38,11 @@ class Photo {
   final int ispublic;
   final int isfriend;
   final int isfamily;
+  final String url_w;
+  final int height_w;
+  final int width_w;
 
-  Photo({this.id, this.owner, this.secret, this.server, this.farm,this.title,this.ispublic,this.isfriend,this.isfamily});
+  Photo({this.id, this.owner, this.secret, this.server, this.farm,this.title,this.ispublic,this.isfriend,this.isfamily, this.url_w, this.height_w, this.width_w});
 
   factory Photo.fromJson(Map<String, dynamic> json) {
     return Photo(
@@ -50,7 +55,9 @@ class Photo {
       ispublic:json['ispublic'] as int,
       isfriend:json['isfriend'] as int,
       isfamily:json['isfamily'] as int,
-
+      url_w:json["url_w"] as String,
+      height_w:json["height_w"] as int,
+      width_w:json["width_w"] as int ,
     );
   }
 }
@@ -72,20 +79,23 @@ class _ResultPageState extends State<ResultPage> {
         title:new Text('IMAGE SEARCH'),
       ),
       body: FutureBuilder<List<Photo>>(
-         future: _getPhoto(),
-          builder: (context, snapshot) {
-            if (snapshot.hasError) print(snapshot.error);
+        future: _getPhoto(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) print(snapshot.error);
 
-              return snapshot.hasData
-                ? PhotosList(photo: snapshot.data)
-                : Center(child: CircularProgressIndicator());
-              },
-            ),
+          return snapshot.hasData
+              ? PhotosList(photo: snapshot.data)
+              : Center(child: CircularProgressIndicator());
+        },
+      ),
 
-        );
+    );
   }
 
 }
+
+
+
 
 class PhotosList extends StatelessWidget {
   final List<Photo> photo;
@@ -97,7 +107,8 @@ class PhotosList extends StatelessWidget {
     return ListView.builder(
       itemCount: photo.length,
       itemBuilder: (context, index) {
-        return Image.network(photo[index].title);
+
+        return Image.network(photo[index].url_w);
       },
     );
   }
